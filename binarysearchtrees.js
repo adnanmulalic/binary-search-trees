@@ -18,37 +18,55 @@ class Tree {
         array.forEach(element => {
             !cleanArray.includes(element) && cleanArray.push(element);
         });
-        let middleIndex = Math.floor(cleanArray.length / 2);
-        let leftSubArray = cleanArray.slice(0, middleIndex);
-        let rightSubArray = cleanArray.slice(middleIndex + 1)
-        this.root = new Node(cleanArray[middleIndex]);
-        let leftSide = new Node(leftSubArray.splice([leftSubArray.length - 1], 1)[0])
-        let rightSide = new Node(rightSubArray.splice([rightSubArray.length - 1], 1)[0])
-        function travelDown(arr, branch) {
-            if (arr.length <= 0) {
-                return branch;
-            }
-            if (arr.length >= 2) {
-                branch.right = new Node(arr[arr.length - 1]);
-                branch.left = new Node(arr[arr.length - 2]);
-                arr.splice(arr.length - 2)
-                console.log("2nd part ran")
-            } else if (arr.length === 1) {
-                branch.left = new Node(arr[0]);
-                arr.length = 0;
-                console.log("3rd part ran")
-            }
-            travelDown(arr, branch.left)
-        }
-        travelDown(rightSubArray, rightSide);
-        travelDown(leftSubArray, leftSide);
-        this.root.left = leftSide;
-        this.root.right = rightSide;
-        console.log(leftSide)
-        console.log(this.root)
 
-        console.log(cleanArray, middleIndex);
-        console.log(leftSubArray, rightSubArray)
+        // remade recursive function according to tutorial video https://www.youtube.com/watch?v=VCTP81Ij-EM
+        function travelDown(arr) {
+            if (arr.length <= 0) {
+                return null;
+            }
+            let middleIndex = Math.floor((arr.length - 1) / 2);
+            console.log(arr)
+            console.log(middleIndex)
+            let midRoot = new Node(arr[middleIndex]);
+
+            midRoot.left = travelDown(arr.slice(0, middleIndex));
+            midRoot.right = travelDown(arr.slice(middleIndex + 1));
+
+            return midRoot;
+            
+        }
+        this.root = travelDown(cleanArray);
+        console.log(this.root)
+    }
+
+    insert(value) {
+        let currentNode = this.root;
+        while (currentNode.left || currentNode.right) {
+            value < currentNode.data ? currentNode = currentNode.left : currentNode = currentNode.right;
+            console.log(currentNode)
+        }
+        value < currentNode.data ? currentNode.left = new Node(value) : currentNode.right = new Node(value);
+    }
+
+    deleteItem(value) {
+        let currentNode = this.root;
+        let newNode = new Node(this.root.data);
+        function findAndDelete(node) {
+            if (value === node.data) {
+                if (!node.left && !node.right) {
+                    return null;
+                } else if (node.left || node.right) {
+                    node.left ? node = node.left : node = node.right;
+                    return node;
+                }
+            }
+            let midRoot = new Node(node.data);
+            node.left ? midRoot.left = findAndDelete(node.left) : null;
+            node.right ? midRoot.right = findAndDelete(node.right) : null;
+            return midRoot;
+        }
+        this.root = findAndDelete(this.root);
+
     }
 
     
