@@ -49,14 +49,27 @@ class Tree {
     }
 
     deleteItem(value) {
-        let currentNode = this.root;
-        let newNode = new Node(this.root.data);
+        function smallestLeft(node) {
+            if (node.left === null) {
+                return node.right;
+            }
+            let midRoot = new Node(node.data);
+            midRoot.right = node.right;
+            midRoot.left = smallestLeft(node.left);
+            return midRoot;
+        }
+
         function findAndDelete(node) {
             if (value === node.data) {
                 if (!node.left && !node.right) {
                     return null;
-                } else if (node.left || node.right) {
+                } else if ((node.left && !node.right) || (!node.left && node.right)) {
                     node.left ? node = node.left : node = node.right;
+                    return node;
+                } else {
+                    console.log("2 children nodes");
+                    node.data = node.right.data;
+                    node.right = smallestLeft(node.right);
                     return node;
                 }
             }
