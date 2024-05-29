@@ -42,21 +42,36 @@ class Tree {
     insert(value) {
         let currentNode = this.root;
         while (currentNode.left || currentNode.right) {
-            value < currentNode.data ? currentNode = currentNode.left : currentNode = currentNode.right;
-            console.log(currentNode)
+            if (currentNode.left && value < currentNode.data) {
+                currentNode = currentNode.left;
+                console.log(currentNode);
+            } else if (currentNode.right && value > currentNode.data) {
+                currentNode = currentNode.right;
+                console.log(currentNode);
+            } else {
+                break;
+            }
         }
-        value < currentNode.data ? currentNode.left = new Node(value) : currentNode.right = new Node(value);
+
+            value < currentNode.data ? currentNode.left = new Node(value) : currentNode.right = new Node(value);
     }
 
     deleteItem(value) {
-        function smallestLeft(node) {
+        function deleteSmallestLeft(node) { // build new tree without node with deleted value
             if (node.left === null) {
                 return node.right;
             }
             let midRoot = new Node(node.data);
             midRoot.right = node.right;
-            midRoot.left = smallestLeft(node.left);
+            midRoot.left = deleteSmallestLeft(node.left);
             return midRoot;
+        }
+
+        function findSmallestLeft(node) { // find node with next value (last node with no left subtree)
+            if (node.left === null) {
+                return node.data;
+            }
+            return findSmallestLeft(node.left);
         }
 
         function findAndDelete(node) {
@@ -68,8 +83,8 @@ class Tree {
                     return node;
                 } else {
                     console.log("2 children nodes");
-                    node.data = node.right.data;
-                    node.right = smallestLeft(node.right);
+                    node.data = findSmallestLeft(node.right);
+                    node.right = deleteSmallestLeft(node.right);
                     return node;
                 }
             }
