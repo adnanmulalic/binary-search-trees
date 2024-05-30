@@ -94,7 +94,54 @@ class Tree {
             return midRoot;
         }
         this.root = findAndDelete(this.root);
+    }
 
+    find(value) {
+        function findNode(node) {
+            if (node && node.data === value) {
+                return node;
+            } else if (node) {
+                return value < node.data ? findNode(node.left) : findNode(node.right);
+            } else {
+                return "Node not found";
+            }
+        }
+        return findNode(this.root);
+    }
+
+    printData(node) { // callback testing function
+        console.log(node.data, "This is callback")
+        //return node.data + "This is callback";
+    }
+
+    levelOrder(callback = false) {
+/*         let arrayOfNodes = [this.root];
+        let arrayOfValues = [];
+        while (arrayOfNodes.length !== 0) {
+            let currentNode = arrayOfNodes[0];
+            (currentNode && callback) && callback(currentNode);
+            currentNode && arrayOfValues.push(currentNode.data);
+            currentNode && arrayOfNodes.push(currentNode.left, currentNode.right);
+            arrayOfNodes.shift();
+        }
+        if (!callback) {
+            console.log(arrayOfValues, "console");
+            return arrayOfValues;
+        } */
+        
+
+
+        function travelDown(node, arrOfNodes = []) {
+            if (!node) {
+                return;
+            }
+            arrOfNodes.push(node);
+            arrayOfValues.push(node.data);
+            node.left && arrayOfNodes.push(travelDown(node.left));
+            node.right && arrayOfNodes.push(travelDown(node.right));
+        }
+        travelDown(this.root);
+        console.log(arrayOfNodes);
     }
 
     
