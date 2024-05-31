@@ -115,8 +115,8 @@ class Tree {
     }
 
     levelOrder(callback = false) {
-/*         let arrayOfNodes = [this.root];
         let arrayOfValues = [];
+/*         let arrayOfNodes = [this.root];
         while (arrayOfNodes.length !== 0) {
             let currentNode = arrayOfNodes[0];
             (currentNode && callback) && callback(currentNode);
@@ -130,18 +130,26 @@ class Tree {
         } */
         
 
-
         function travelDown(node, arrOfNodes = []) {
             if (!node) {
                 return;
             }
-            arrOfNodes.push(node);
+            //console.log(node)
+            callback && callback(node);
+            arrOfNodes.shift();
             arrayOfValues.push(node.data);
-            node.left && arrayOfNodes.push(travelDown(node.left));
-            node.right && arrayOfNodes.push(travelDown(node.right));
+            node.left && arrOfNodes.push(node.left);
+            node.right && arrOfNodes.push(node.right);
+            travelDown(arrOfNodes[0], arrOfNodes);
+            //console.log(arrOfNodes);
+            return;
         }
         travelDown(this.root);
-        console.log(arrayOfNodes);
+        console.log(callback)
+        if (callback !== false) {
+            console.log(arrayOfValues, "console");
+            return arrayOfValues;
+        } 
     }
 
     
