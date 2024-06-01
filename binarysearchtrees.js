@@ -116,7 +116,7 @@ class Tree {
 
     levelOrder(callback = false) {
         let arrayOfValues = [];
-/*         let arrayOfNodes = [this.root];
+/*         let arrayOfNodes = [this.root]; // iterative 
         while (arrayOfNodes.length !== 0) {
             let currentNode = arrayOfNodes[0];
             (currentNode && callback) && callback(currentNode);
@@ -124,33 +124,92 @@ class Tree {
             currentNode && arrayOfNodes.push(currentNode.left, currentNode.right);
             arrayOfNodes.shift();
         }
-        if (!callback) {
-            console.log(arrayOfValues, "console");
-            return arrayOfValues;
-        } */
-        
+*/        
 
-        function travelDown(node, arrOfNodes = []) {
+        function travelDown(node, arrOfNodes = []) { // recursive
             if (!node) {
                 return;
             }
-            //console.log(node)
             callback && callback(node);
             arrOfNodes.shift();
             arrayOfValues.push(node.data);
             node.left && arrOfNodes.push(node.left);
             node.right && arrOfNodes.push(node.right);
             travelDown(arrOfNodes[0], arrOfNodes);
-            //console.log(arrOfNodes);
             return;
         }
         travelDown(this.root);
-        console.log(callback)
+
         if (callback !== false) {
             console.log(arrayOfValues, "console");
             return arrayOfValues;
         } 
     }
+
+    inOrder(callback = false) {
+        let arrayOfValues = [];
+        
+        function travelDown(node) {
+            if (!node) {
+                return;
+            }
+            travelDown(node.left);
+            callback && callback(node);
+            arrayOfValues.push(node.data); // same as preOrder, except when node.data is pushed in array(before traversing right subtree)
+            travelDown(node.right);
+            return;
+        }
+
+        travelDown(this.root);
+
+        if (callback !== false) {
+            console.log(arrayOfValues, "console");
+            return arrayOfValues;
+        } 
+    }
+    
+    preOrder(callback = false) {
+        let arrayOfValues = [];
+
+        function travelDown(node) { // modified recursive from leverOrder
+            if (!node) {
+                return;
+            }
+            callback && callback(node);
+            arrayOfValues.push(node.data);
+            travelDown(node.left);
+            travelDown(node.right);
+            return;
+        }
+        travelDown(this.root);
+
+        if (callback !== false) {
+            console.log(arrayOfValues, "console");
+            return arrayOfValues;
+        } 
+    }
+
+    postOrder(callback = false) {
+        let arrayOfValues = [];
+
+        function travelDown(node) { // similiar to other, except node.data is pushed at the end (when we reach nodes with subtrees)
+            if (!node) {
+                return;
+            }
+            travelDown(node.left);
+            travelDown(node.right);
+            callback && callback(node);
+            arrayOfValues.push(node.data);
+            return;
+        }
+        travelDown(this.root);
+
+        if (callback !== false) {
+            console.log(arrayOfValues, "console");
+            return arrayOfValues;
+        } 
+    }
+
 
     
 }
@@ -170,4 +229,4 @@ const prettyPrint = (node, prefix = "", isLeft = true) => {
  
 
 let tree = new Tree([1, 7, 4, 23, 8, 9, 4, 3, 5, 7, 9, 67, 6345, 324]);
-let diffTree = new Tree([1, 2, 3, 4, 5, 6, 7, 8, 9]);
+let diffTree = new Tree([1, 2, 3, 4, 5, 6]);
