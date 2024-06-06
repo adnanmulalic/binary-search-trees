@@ -25,18 +25,13 @@ class Tree {
                 return null;
             }
             let middleIndex = Math.floor((arr.length - 1) / 2);
-            console.log(arr)
-            console.log(middleIndex)
             let midRoot = new Node(arr[middleIndex]);
-
             midRoot.left = travelDown(arr.slice(0, middleIndex));
             midRoot.right = travelDown(arr.slice(middleIndex + 1));
-
             return midRoot;
             
         }
         this.root = travelDown(cleanArray);
-        console.log(this.root)
     }
 
     insert(value) {
@@ -44,16 +39,14 @@ class Tree {
         while (currentNode.left || currentNode.right) {
             if (currentNode.left && value < currentNode.data) {
                 currentNode = currentNode.left;
-                console.log(currentNode);
             } else if (currentNode.right && value > currentNode.data) {
                 currentNode = currentNode.right;
-                console.log(currentNode);
             } else {
                 break;
             }
         }
 
-            value < currentNode.data ? currentNode.left = new Node(value) : currentNode.right = new Node(value);
+        value < currentNode.data ? currentNode.left = new Node(value) : currentNode.right = new Node(value);
     }
 
     deleteItem(value) {
@@ -82,7 +75,6 @@ class Tree {
                     node.left ? node = node.left : node = node.right;
                     return node;
                 } else {
-                    console.log("2 children nodes");
                     node.data = findSmallestLeft(node.right);
                     node.right = deleteSmallestLeft(node.right);
                     return node;
@@ -140,8 +132,7 @@ class Tree {
         }
         travelDown(this.root);
 
-        if (callback !== false) {
-            console.log(arrayOfValues, "console");
+        if (callback === false) {
             return arrayOfValues;
         } 
     }
@@ -162,8 +153,7 @@ class Tree {
 
         travelDown(this.root);
 
-        if (callback !== false) {
-            console.log(arrayOfValues, "console");
+        if (callback === false) {
             return arrayOfValues;
         } 
     }
@@ -183,8 +173,7 @@ class Tree {
         }
         travelDown(this.root);
 
-        if (callback !== false) {
-            console.log(arrayOfValues, "console");
+        if (callback === false) {
             return arrayOfValues;
         } 
     }
@@ -204,17 +193,74 @@ class Tree {
         }
         travelDown(this.root);
 
-        if (callback !== false) {
-            console.log(arrayOfValues, "console");
+        if (callback === false) {
             return arrayOfValues;
         } 
     }
 
+    height(value) {
+        let heightOfNode = null;
+        function heightOfTree(node) { // as per this video https://www.youtube.com/watch?v=AWIJwNf0ZQE
+            if (!node) {
+                return -1;
+            }
+            let leftSide = heightOfTree(node.left);
+            let rightSide = heightOfTree(node.right);
+            let maxHeight = leftSide > rightSide ? leftSide + 1 : rightSide + 1;
+            if (node.data === value) {
+                heightOfNode = maxHeight;
+            }
+            return maxHeight;
+        }
 
-    
+        if (this.root.data === value) {
+            return 0;
+        } else {
+            heightOfTree(this.root);
+            return heightOfNode ? heightOfNode : "No node with this value";
+        }
+    }
+
+    depth(value) {
+        function findNode(node, edges = 0) {
+            if (node.data === value) {
+                return edges;
+            }
+            return value < node.data ? node.left && findNode(node.left, edges + 1) : node.right && findNode(node.right, edges + 1);
+        }
+
+        if (this.root.data === value) {
+            return 0;
+        } else {
+            return findNode(this.root) ? findNode(this.root) : "No node with this value";
+        }
+    }
+
+    isBalanced() {
+        let isBalanced = true;
+        function heightOfTree(node) { 
+            if (!node) {
+                return -1;
+            }
+            let leftSide = heightOfTree(node.left);
+            let rightSide = heightOfTree(node.right);
+            let maxHeight = leftSide > rightSide ? leftSide + 1 : rightSide + 1;
+            console.log(leftSide - rightSide)
+            if (leftSide - rightSide > 1 || leftSide - rightSide < - 1) { // if left tree - right is greater then 1 or less then -1, then tree is not balanced
+                isBalanced = false;
+            }
+            return maxHeight;
+        }
+        heightOfTree(this.root);
+        return isBalanced;
+    }
+
+    rebalance() {
+        this.buildTree(this.levelOrder());
+    }
 }
 
-const prettyPrint = (node, prefix = "", isLeft = true) => {
+const prettyPrint = (node, prefix = "", isLeft = true) => { // function provided by The Odin Project to display tree in console
     if (node === null) {
       return;
     }
@@ -229,4 +275,4 @@ const prettyPrint = (node, prefix = "", isLeft = true) => {
  
 
 let tree = new Tree([1, 7, 4, 23, 8, 9, 4, 3, 5, 7, 9, 67, 6345, 324]);
-let diffTree = new Tree([1, 2, 3, 4, 5, 6]);
+let smallTree = new Tree([1, 2, 3, 4, 5]);
