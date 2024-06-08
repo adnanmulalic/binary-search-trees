@@ -6,13 +6,13 @@ class Node {
     }
 }
 
-class Tree {
+export default class Tree {
     constructor(treeArray) {
-        this.tree = treeArray;
-        this.root = null;
+        this.treeArray = treeArray;
+        this.root = this.buildTree(treeArray);
     }
 
-    buildTree(array = this.tree) {
+    buildTree(array = this.treeArray) {
         array.sort((a, b) => a - b);
         let cleanArray = [];
         array.forEach(element => {
@@ -31,7 +31,7 @@ class Tree {
             return midRoot;
             
         }
-        this.root = travelDown(cleanArray);
+        return travelDown(cleanArray);
     }
 
     insert(value) {
@@ -245,7 +245,6 @@ class Tree {
             let leftSide = heightOfTree(node.left);
             let rightSide = heightOfTree(node.right);
             let maxHeight = leftSide > rightSide ? leftSide + 1 : rightSide + 1;
-            console.log(leftSide - rightSide)
             if (leftSide - rightSide > 1 || leftSide - rightSide < - 1) { // if left tree - right is greater then 1 or less then -1, then tree is not balanced
                 isBalanced = false;
             }
@@ -256,23 +255,6 @@ class Tree {
     }
 
     rebalance() {
-        this.buildTree(this.levelOrder());
+        this.root = this.buildTree(this.levelOrder());
     }
 }
-
-const prettyPrint = (node, prefix = "", isLeft = true) => { // function provided by The Odin Project to display tree in console
-    if (node === null) {
-      return;
-    }
-    if (node.right !== null) {
-      prettyPrint(node.right, `${prefix}${isLeft ? "│   " : "    "}`, false);
-    }
-    console.log(`${prefix}${isLeft ? "└── " : "┌── "}${node.data}`);
-    if (node.left !== null) {
-      prettyPrint(node.left, `${prefix}${isLeft ? "    " : "│   "}`, true);
-    }
-  };
- 
-
-let tree = new Tree([1, 7, 4, 23, 8, 9, 4, 3, 5, 7, 9, 67, 6345, 324]);
-let smallTree = new Tree([1, 2, 3, 4, 5]);
